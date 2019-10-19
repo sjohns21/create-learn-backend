@@ -12,7 +12,7 @@ import { TeacherService } from './teacher.service';
 
 @Controller('teacher')
 export class TeacherController {
-  constructor(private readonly productsService: TeacherService) {
+  constructor(private readonly teacherService: TeacherService) {
   }
 
   @Post()
@@ -21,7 +21,7 @@ export class TeacherController {
     @Body('description') prodDesc: string,
     @Body('price') prodPrice: number,
   ) {
-    const generatedId = await this.productsService.insertProduct(
+    const generatedId = await this.teacherService.insertProduct(
       prodTitle,
       prodDesc,
       prodPrice,
@@ -31,13 +31,13 @@ export class TeacherController {
 
   @Get()
   async getAllProducts() {
-    const products = await this.productsService.getProducts();
+    const products = await this.teacherService.getProducts();
     return products;
   }
 
   @Get(':id')
   getProduct(@Param('id') prodId: string) {
-    return this.productsService.getSingleProduct(prodId);
+    return this.teacherService.getSingleProduct(prodId);
   }
 
   @Patch(':id')
@@ -47,13 +47,13 @@ export class TeacherController {
     @Body('description') prodDesc: string,
     @Body('price') prodPrice: number,
   ) {
-    await this.productsService.updateProduct(prodId, prodTitle, prodDesc, prodPrice);
+    await this.teacherService.updateProduct(prodId, prodTitle, prodDesc, prodPrice);
     return null;
   }
 
   @Delete(':id')
   async removeProduct(@Param('id') prodId: string) {
-    await this.productsService.deleteProduct(prodId);
+    await this.teacherService.deleteProduct(prodId);
     return null;
   }
 }
