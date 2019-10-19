@@ -60,17 +60,19 @@ export class TeacherService {
     // updatedProduct.save();
   }
 
-  async updateHour(
+  async hourToggle(
     teacherId: string,
     dayIndex: number,
     hourIndex: number,
   ) {
 
+    const teacherBefore = await this.findTeacher(teacherId);
+    const prevState = teacherBefore.hours[dayIndex][hourIndex];
     const updatedTeacher = await this.teacherModel.findByIdAndUpdate(
-      teacherId, { $set: { [`hours.${dayIndex}.${hourIndex}`]: true } }, { useFindAndModify: false },
+      teacherId, { $set: { [`hours.${dayIndex}.${hourIndex}`]: !prevState } }, { useFindAndModify: false },
     );
-    const foundTeacher = await this.findTeacher(teacherId);
-    if (updatedTeacher && foundTeacher) {
+    const teacherAfter = await this.findTeacher(teacherId);
+    if (updatedTeacher && teacherAfter) {
       return { updated: true };
     } else {
       return { updated: false };
@@ -97,7 +99,7 @@ export class TeacherService {
     return product;
   }
 
-  private async findTeacher(id: string): Promise<Teacher> {
+  async findTeacher(id: string): Promise<Teacher> {
     let teacher;
     try {
       teacher = await this.teacherModel.findById(id).exec();

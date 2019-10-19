@@ -35,9 +35,13 @@ export class TeacherController {
     return products;
   }
 
+  // @Get(':id')
+  // getProduct(@Param('id') prodId: string) {
+  //   return this.teacherService.getSingleProduct(prodId);
+  // }
   @Get(':id')
-  getProduct(@Param('id') prodId: string) {
-    return this.teacherService.getSingleProduct(prodId);
+  getTeacher(@Param('id') teacherId: string) {
+    return this.teacherService.findTeacher(teacherId);
   }
 
   // @Patch(':id')
@@ -57,7 +61,7 @@ export class TeacherController {
     @Body('dayIndex') dayIndex: number,
     @Body('hourIndex') hourIndex: number,
   ) {
-    return await this.teacherService.updateHour(teacherId, dayIndex, hourIndex);
+    return await this.teacherService.hourToggle(teacherId, dayIndex, hourIndex);
   }
 
   @Delete(':id')
