@@ -60,6 +60,23 @@ export class TeacherService {
     // updatedProduct.save();
   }
 
+  async updateHour(
+    teacherId: string,
+    dayIndex: number,
+    hourIndex: number,
+  ) {
+
+    const updatedTeacher = await this.teacherModel.findByIdAndUpdate(
+      teacherId, { $set: { [`hours.${dayIndex}.${hourIndex}`]: true } }, { useFindAndModify: false },
+    );
+    const foundTeacher = await this.findTeacher(teacherId);
+    if (updatedTeacher && foundTeacher) {
+      return { updated: true };
+    } else {
+      return { updated: false };
+    }
+  }
+
   async deleteProduct(prodId: string) {
     const result = await this.teacherModel.deleteOne({ _id: prodId }).exec();
     if (result.n === 0) {
@@ -78,5 +95,18 @@ export class TeacherService {
       throw new NotFoundException('Could not find product.');
     }
     return product;
+  }
+
+  private async findTeacher(id: string): Promise<Teacher> {
+    let teacher;
+    try {
+      teacher = await this.teacherModel.findById(id).exec();
+    } catch (error) {
+      throw new NotFoundException('Could not find teacher.');
+    }
+    if (!teacher) {
+      throw new NotFoundException('Could not find teacher.');
+    }
+    return teacher;
   }
 }

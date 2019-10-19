@@ -57,8 +57,7 @@ export class TeacherController {
     @Body('dayIndex') dayIndex: number,
     @Body('hourIndex') hourIndex: number,
   ) {
-    await this.teacherService.updateHour(teacherId, dayIndex, hourIndex);
-    return null;
+    return await this.teacherService.updateHour(teacherId, dayIndex, hourIndex);
   }
 
   @Delete(':id')
