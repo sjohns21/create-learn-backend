@@ -68,8 +68,14 @@ export class TeacherService {
 
     const teacherBefore = await this.findTeacher(teacherId);
     const prevState = teacherBefore.hours[dayIndex][hourIndex];
+    let newState;
+    if (prevState === 0) {
+      newState = 1;
+    } else if (prevState === 1) {
+      newState = 0;
+    }
     const updatedTeacher = await this.teacherModel.findByIdAndUpdate(
-      teacherId, { $set: { [`hours.${dayIndex}.${hourIndex}`]: !prevState } }, { useFindAndModify: false },
+      teacherId, { $set: { [`hours.${dayIndex}.${hourIndex}`]: newState } }, { useFindAndModify: false },
     );
     const teacherAfter = await this.findTeacher(teacherId);
     if (updatedTeacher && teacherAfter) {
