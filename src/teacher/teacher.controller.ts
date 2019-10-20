@@ -29,6 +29,21 @@ export class TeacherController {
     return { id: generatedId };
   }
 
+  @Post('class')
+  async addClass(
+    @Body('teacherId') teacherId: string,
+    @Body('dayIndex') dayIndex: number,
+    @Body('start') start: number,
+    @Body('end') end: number,
+  ) {
+    return await this.teacherService.insertClass(
+      teacherId,
+      dayIndex,
+      start,
+      end,
+    );
+  }
+
   @Get()
   async getAllProducts() {
     const products = await this.teacherService.getProducts();
