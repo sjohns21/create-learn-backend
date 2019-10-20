@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -19,6 +19,43 @@ export class TeacherService {
     });
     const result = await newProduct.save();
     return result.id as string;
+  }
+
+  async insertClass(teacherId: string, dayIndex: number, start: number, end: number) {
+    if (start > end) {
+      throw new BadRequestException();
+    }
+    const teacherBefore = await this.findTeacher(teacherId);
+    const day = teacherBefore.hours[dayIndex];
+
+    let windowIsAvailable = true;
+    if (dayIndex >= 0 && dayIndex <= 6) {
+      for (let hour = start; hour <= end; hour++) {
+        const status = day[hour];
+        if (status === 0 || status === 2) {
+          windowIsAvailable = false;
+          break;
+        }
+      }
+    }
+    if (windowIsAvailable) {
+      for (let hour = start; hour <= end; hour++) {
+        day[hour] = 2;
+      }
+
+      const updatedTeacher = await this.teacherModel.findByIdAndUpdate(
+        teacherId, { $set: { [`hours.${dayIndex}`]: day } }, { useFindAndModify: false },
+      );
+      const teacherAfter = await this.findTeacher(teacherId);
+      if (updatedTeacher && teacherAfter) {
+        return { classAdded: true };
+      } else {
+        return { classAdded: false };
+      }
+    } else {
+      return { classAdded: false };
+    }
+
   }
 
   async getProducts() {
