@@ -13,6 +13,11 @@ export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {
   }
 
+  @Get()
+  getTeacher() {
+    return this.teacherService.findTeacher();
+  }
+
   @Post('class')
   async addClass(
     @Body('dayIndex') dayIndex: number,
@@ -26,16 +31,16 @@ export class TeacherController {
     );
   }
 
-  @Get()
-  getTeacher() {
-    return this.teacherService.findTeacher();
-  }
-
   @Patch('hour')
   async updateHours(
     @Body('dayIndex') dayIndex: number,
     @Body('hourIndex') hourIndex: number,
   ) {
     return await this.teacherService.hourToggle(dayIndex, hourIndex);
+  }
+
+  @Post('reset')
+  async reset() {
+    return await this.teacherService.reset();
   }
 }

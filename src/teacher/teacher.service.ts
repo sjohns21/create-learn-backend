@@ -85,4 +85,35 @@ export class TeacherService {
     }
   }
 
+  async reset() {
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const day = [];
+      for (let j = 0; j < 24; j++) {
+        day.push(0);
+      }
+      days.push(day);
+    }
+    await this.teacherModel.findOneAndUpdate(
+      {}, { $set: { hours: days } }, { useFindAndModify: false },
+    );
+    const teacherAfter = await this.findTeacher();
+
+    let resetSuccess = true;
+    for (let i = 0; i < 7; i++) {
+      for (let j = 0; j < 24; j++) {
+        if (teacherAfter.hours[i][j] !== 0) {
+          resetSuccess = false;
+          break;
+        }
+      }
+    }
+    if (resetSuccess) {
+      return { reset: true };
+    } else {
+      return { reset: false };
+    }
+
+  }
+
 }
