@@ -33,7 +33,6 @@ export class TeacherController {
 
   @Patch('hour')
   async updateHours(
-    @Body('teacherId') teacherId: string,
     @Body('dayIndex') dayIndex: number,
     @Body('hourIndex') hourIndex: number,
   ) {

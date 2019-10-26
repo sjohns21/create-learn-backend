@@ -11,6 +11,19 @@ export class TeacherService {
   ) {
   }
 
+  async findTeacher(): Promise<Teacher> {
+    let teacher;
+    try {
+      teacher = await this.teacherModel.findOne().exec();
+    } catch (error) {
+      throw new NotFoundException('Could not find teacher.');
+    }
+    if (!teacher) {
+      throw new NotFoundException('Could not find teacher.');
+    }
+    return teacher;
+  }
+
   async insertClass(dayIndex: number, start: number, end: number) {
     if (start > end) {
       throw new BadRequestException();
@@ -72,16 +85,4 @@ export class TeacherService {
     }
   }
 
-  async findTeacher(): Promise<Teacher> {
-    let teacher;
-    try {
-      teacher = await this.teacherModel.findOne().exec();
-    } catch (error) {
-      throw new NotFoundException('Could not find teacher.');
-    }
-    if (!teacher) {
-      throw new NotFoundException('Could not find teacher.');
-    }
-    return teacher;
-  }
 }
